@@ -1,0 +1,18 @@
+#1.部署gre vpn
+#gre vpn仅适用于linux主机之间
+#server（linux7）：eth0-192.168.1.100 eth1-200.100.10.1
+#client（linux7）: eth0-200.100.10.2
+#server
+#加载gre模块
+modprobe ip_gre
+#建立模式为gre的隧道tun0
+ip tunnel add tun0 remote 200.100.10.2 local 200.100.10.1
+#启动隧道
+ip link set tun0 up
+#为隧道设置两端ip（ip随意）
+ip addr add 10.10.10.10/24 peer 10.10.10.20/24 dev tun0
+#开启路由转发
+echo "1">/etc/proc/sys/net/ipv4/ip_forwrad
+#关闭防火墙
+firewall-cmd --set-default-zone=trusted
+#clinet操作相同，注意ip变换位置即可
