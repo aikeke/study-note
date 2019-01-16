@@ -1,4 +1,4 @@
-#1.部署gre vpn
+1.部署gre vpn
 #gre vpn仅适用于linux主机之间
 #server（linux7）：eth0-192.168.1.100 eth1-200.100.10.1
 #client（linux7）: eth0-200.100.10.2
@@ -16,3 +16,20 @@ echo "1">/etc/proc/sys/net/ipv4/ip_forwrad
 #关闭防火墙
 firewall-cmd --set-default-zone=trusted
 #clinet操作相同，注意ip变换位置即可
+
+2.部署pptp vpn（windows可用，安全性不高，翻墙可能被禁）
+#安装pptpd软件包，yum源没有的话从网上下
+yum install pptpd
+#分配ip
+cat >>/etc/pptpd.conf<<EOF
+ localip 200.100.10.1
+ remoteip 192.168.1.1-100
+EOF
+#修改账户配置文件(用户名 服务端标记 密码 客户端标记)
+sed -i '$aaikeke * 123456  *' /etc/ppp/chap-secrets
+#开启路由转发
+echo "1">/etc/proc/sys/net/ipv4/ip_forwrad
+#关闭防火墙
+firewall-cmd --set-default-zone=trusted
+#启动服务
+systemctl start pptpd
