@@ -1,0 +1,17 @@
+#修改之前，务必先备份！！
+
+#建议修改默认端口
+Port 12345
+#协议采用2，1有漏洞
+Protocol 2
+# 当使用者连上 SSH server 之后，会出现输入密码的画面，在该画面中，在多久时间内没有成功连上 SSH server，就断线！时间为秒！
+LoginGraceTime 600　　
+# 是否允许 root 登入！预设是允许的，但是建议设定成 no！
+PermitRootLogin no
+# 当使用者的 host key 改变之后，Server 就不接受联机
+StrictModes yes　
+#UseDNS是否使用dns反向解析
+UseDNS no
+
+
+#剩下的按需变动，基本保持默认即可
