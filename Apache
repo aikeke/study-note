@@ -1,0 +1,125 @@
+Apache常用配置
+　　Apache配置文件：/etc/httpd/conf/httpd.conf
+1. ServerRoot：服务器根目录，也就是Apache的安装目录，其他的目录配置若是使用相对路径，都是相对于服务器根目录的。
+   ServerRoot: "/etc/httpd"
+2. Listen：服务器监听的端口，可以只配置端口，也可以同时指定IP地址和端口，还可以指定使用的协议。（可配置多个端口）
+   Listen 127.0.0.1:80 http
+3. DocumentRoot：网站的根目录，也就是放置网站文件的地方。
+   DocumentRoot = "/var/www/html"
+4. LoadModule：加载特定的DSO模块，这些已编译的DSO模块存放于Apache安装目录下的modules目录中。
+   LoadModule  actions_module  modules/mod_actions.so
+5. User：设置实际提供服务的子进程的用户。
+   User  apache
+6. Group：设置提供服务的Apache子进程运行时的用户组
+   Group  aache
+7. ServerAdmin：设置在所有返回给客户端的错误信息中包含的管理员的邮件地址。（也可以使用URL）
+   ServerAdmin  root@localhost
+8. ServerName：设置服务器用于识别自己的主机名和端口号。如果没有指定端口号，服务器会使用接受请求的那个端口。
+   ServerName  localhost:80
+9. <Directory>：和</Directory>一起用于封装一组指令，使之仅对某个目录及其子目录生效。该指令不能被嵌套使用，也不能出现
+    在<Limit>或<LimitExcept>配置段中。
+   <Directory “D:/wamp/www”>
+   　　Options  Indexes  FollowSymLinks  MultiViews  Includes  IncludesNOEXEC  ExecCGI
+   　　AllowOverride  None
+   　　Order  allow, deny
+  　　 allow  from  all
+   </Directory>
+  指令及其参数说明：
+  （1）Options：控制在特定目录中将使用哪些服务器特性。
+     Indexs：若访问目录下无index文件，则准许显示该目录下的文件列表以供选择。
+     FollowSymLinks：准许在目录中使用符号链接到其他目录。
+     MultiViews：准许内容协商的“多重视图”。如果客户端请求的路径可能对应多种类型的文件，服务器将根据客户端请求的具体情
+     况自动选择一个最匹配客户端要求的文件。例如只在地址栏输入index也可以访问到index.php页面。
+     Includes：准许SSI。
+     IncludesNOEXEC：准许SSI，但不可使用exec和include功能。
+     ExecCGI：准许在该目录下使用CGI。
+     All：表示除了MultiViews之外的所有特性。
+     None：表示不启用任何的服务器特性。
+     注意：如果一个目录被多次设置了options，则最特殊的一个会被完全接受。
+   （2）AllowOverrid：是否准许文件“.htaccess”中设定的权限覆盖“access.conf”文件中设定的权限。
+     All：准许覆盖。
+     None：不准许覆盖。
+     AuthConfig：允许使用与认证授权相关的指令。
+     FileInfo：允许使用控制文档类型的指令、控制文档元数据的指令、mod_rewrite中的指令、mod_actions中的Action指令。
+     Indexs：允许使用控制目录索引的指令。
+     Limit：允许使用控制主机访问的指令。
+   （3）Order：控制默认的访问状态和allow、deny指令生效的顺序。
+     allow：允许访问。
+     deny：拒绝访问。
+     这两个参数由最后一个出现的参数决定，如“Order allow，deny”默认拒绝了所有的意思（中间有且只有一个逗号），但最终的判断
+     结果还要总下面的allow、deny语句中各自所包含的范围（如果有的话），这两个语句后面都一定接着“from”，否则Apache
+     会无法启动。“Order allow，deny”表示先判断allow语句再判断deny语句。
+    注意：上面的Order和allow、deny语句是针对Apache2.2的配置，Apache2.4的客户端访问控制由Require语句来配置。　
+10. <Files>：提供基于文件名的访问控制。<Files>段将根据他们在配置文件中出现的顺序被处理：在<Directory>段和.htaccess文件被处理之后，
+    但在<Location>段之前。<Files>能嵌入到<Directory>段中以限制它们作用的文件范围。也可用于.htaccess文件当中，以允许用户在文件层面上控制对文件的访问。
+　　<Files ".ht*">
+    　Require all denied
+　　</Files>
+11. <IfModule>：封装根据指定的模块是否启用而决定是否生效的指令。
+   <IfModule http2_module>
+    　　ProtocolsHonorOrder On
+   　　 Protocols h2 h2c http/1.1
+   </IfModule>
+12. DirectoryIndex：当客户端请求一个目录时寻找的资源列表。
+   DirectoryIndex index.php index.htm index.html
+   （服务器将返回最先找到的那一个）
+13. ErrorLog：指定当服务器遇到错误时记录错误日志的文件。
+   （若不是一个以“/”开头的绝对路径，则是一个相对于ServerRoot的相对路径）
+   ErrorLog "logs/error.log"
+
+14. LogLevel：用于调整记录在错误日志中的信息的详细程度。
+   错误信息详细程度按重要性降序排列如下：
+   emerg：紧急（系统无法使用）
+   alert：必须立即采取措施。
+   crit：致命情况。
+   error：错误情况。
+   warn：警告情况。
+   notice：一般重要情况。
+   info：普通信息。
+   debug：调试信息。
+   （当指定了某个级别时，所有级别高于它的信息也会被同时记录）
+15. LogFormat：定义访问日志的记录格式。
+   LogFormat  "%h %l %u %t \"%r\" %>s %b"  common
+   （其中common就是这种格式的标识符）
+16. CustomLog：设定日志的文件名和格式。
+   CustomLog  "logs/access.log"  common
+   （使用标识符common定义的格式来记录logs/access.log这个日志文件）
+17. TransferLog：指定日志文件的位置。
+   本指令除不允许直接定义日志格式或根据条件进行日志记录外，与CustomLog指令有完全相同的参数和功能。
+18. Alias：映射URL到文件系统的特定区域。Alias指令使客户端可以访问到DocumentRoot以外的本地文件。
+   Alias /myphoto "E:/照片"
+    <Directory "E:/照片">
+        Options Indexes
+        Require all granted
+   </Directory>
+    目录/myphoto是相对于DocumentRoot的相对路径，甚至可以是一个不存在的目录，这时访问该目录就会映射到“E:/照片”目录中。
+    注意：一定要通过<Directory>段明确地对目标目录设定访问权限，否则会提示“forbidden”。
+　　Redirect：将一个路径重定向到另一个路径下。
+　　Redirect  /haha  /chsfc
+　　（Redirect和Alias不同，配置中的两个路径都是在DocumentRoot目录下的）
+　　注意：要使用Alias和Redirect都应该先开启alias_module模块功能。
+19. ScriptAlias：映射一个URL到文件系统并视之为CGI脚本目录。
+   ScriptAlias /cgi-bin/ "D:/wamp/bin/Apache2.4.23/cgi-bin"
+20. DefaultType：当服务器无法确定一个文档的内容类型时发送的默认MIME内容类型。
+   DefaultType  text/plain   （纯文本，浏览器在内部打开）
+   DefaultType  application/octet-stream   （浏览器提示用户进行保存）
+21. AddType：为特定后缀的文件指定MIME类型，这里的设置将覆盖mime.types中的设置。
+   AddType  application/x-httpd-php  .php .html .htm   （前导点可带可不带）
+22. ErrorDocument：批示当遇到错误的时候服务器将给客户端什么样的应答。
+   语法：
+   ErrorDocument  error-code  document
+   其中error-code时服务器返回的错误代码，document是回应的数据，可以是简单的文本，
+   本地网页，本地CGI程序，或远程主机上的网页。
+   配置示例：
+   ErrorDocument  500  "The server made a boo boo."
+   ErrorDocument  402  http://www.example.com/subscription_info.html
+23. EnableMMAP：指示httpd在递送中如果需要读取一个文件的内容，是否可以使用内存映射。
+    EnableMMAP  On
+    EnableMMAP  Off
+   （这种内存映射有时会带来性能的提高，有时却会出现问题）
+24. EnableSendfile：控制httpd是否可以使用操作系统内核的sendfile支持来将文件发送到户端。
+   EnableSendfile  Off
+   （这个sendfile机制避免了分开的读和写操作以及缓冲区分配，但是在一些平台或文件系统上会引发一些问题）
+25. include：在服务器配置文件中包含其他配置文件。
+   include  conf/extra/httpd-autoindex.conf
+   
