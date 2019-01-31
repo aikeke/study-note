@@ -1,0 +1,46 @@
+#今天nginx添加模块，手一抖执行make && make install覆盖安装，心里瞬间拔凉拔凉，但是仔细看一下make install的执行过程，
+我惊讶的发现基本不存在任何问题，只有sbin/nginx和几个后缀为default的备份文件会被覆盖外，没有其他删除修改的操作。所以说，
+就算误操作了make install也不必惊慌。
+make -f objs/Makefile install
+make[1]: Entering directory `/root/lnmp_soft/nginx-1.12.2'
+test -d '/usr/local/nginx' || mkdir -p '/usr/local/nginx'
+test -d '/usr/local/nginx/sbin' \
+	|| mkdir -p '/usr/local/nginx/sbin'
+test ! -f '/usr/local/nginx/sbin/nginx' \
+	|| mv '/usr/local/nginx/sbin/nginx' \
+		'/usr/local/nginx/sbin/nginx.old'
+cp objs/nginx '/usr/local/nginx/sbin/nginx'
+test -d '/usr/local/nginx/conf' \
+	|| mkdir -p '/usr/local/nginx/conf'
+cp conf/koi-win '/usr/local/nginx/conf'
+cp conf/koi-utf '/usr/local/nginx/conf'
+cp conf/win-utf '/usr/local/nginx/conf'
+test -f '/usr/local/nginx/conf/mime.types' \
+	|| cp conf/mime.types '/usr/local/nginx/conf'
+cp conf/mime.types '/usr/local/nginx/conf/mime.types.default'
+test -f '/usr/local/nginx/conf/fastcgi_params' \
+	|| cp conf/fastcgi_params '/usr/local/nginx/conf'
+cp conf/fastcgi_params \
+	'/usr/local/nginx/conf/fastcgi_params.default'
+test -f '/usr/local/nginx/conf/fastcgi.conf' \
+	|| cp conf/fastcgi.conf '/usr/local/nginx/conf'
+cp conf/fastcgi.conf '/usr/local/nginx/conf/fastcgi.conf.default'
+test -f '/usr/local/nginx/conf/uwsgi_params' \
+	|| cp conf/uwsgi_params '/usr/local/nginx/conf'
+cp conf/uwsgi_params \
+	'/usr/local/nginx/conf/uwsgi_params.default'
+test -f '/usr/local/nginx/conf/scgi_params' \
+	|| cp conf/scgi_params '/usr/local/nginx/conf'
+cp conf/scgi_params \
+	'/usr/local/nginx/conf/scgi_params.default'
+test -f '/usr/local/nginx/conf/nginx.conf' \
+	|| cp conf/nginx.conf '/usr/local/nginx/conf/nginx.conf'
+cp conf/nginx.conf '/usr/local/nginx/conf/nginx.conf.default'
+test -d '/usr/local/nginx/logs' \
+	|| mkdir -p '/usr/local/nginx/logs'
+test -d '/usr/local/nginx/logs' \
+	|| mkdir -p '/usr/local/nginx/logs'
+test -d '/usr/local/nginx/html' \
+	|| cp -R html '/usr/local/nginx'
+test -d '/usr/local/nginx/logs' \
+	|| mkdir -p '/usr/local/nginx/logs'
