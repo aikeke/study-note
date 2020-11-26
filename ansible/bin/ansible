@@ -1,0 +1,18 @@
+
+from optparse import OptionParser
+
+class Cli(object):
+    def __init__(self):
+        pass
+    
+    def parse(self):
+        parser=OptionParser(usage='ansible <host-pattern> [options]')
+
+        parser.add_option("-m", "--module-name", dest="module_name",help="module name to execute", default='test')
+        options, args = parser.parse_args()
+        print options
+        print '__________'
+        print args
+
+a=Cli()
+a.parse()
