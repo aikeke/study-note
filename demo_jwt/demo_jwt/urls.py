@@ -1,4 +1,4 @@
-"""student_sys URL Configuration
+"""demo_jwt URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from student.views import index
+from rest_framework_jwt.views import obtain_jwt_token
+from app01.views import IndexView
 
 urlpatterns = [
-    url(r'^$', index,name='index'),
     url(r'^admin/', admin.site.urls),
+    url(r'^jwt-token-auth/', obtain_jwt_token),
+    url(r'^index/',IndexView.as_view(),name='index'),
 ]
