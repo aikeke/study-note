@@ -1,7 +1,7 @@
 #/usr/bin/env python3
+#-*- coding:utf-8 -*-
 #author: aikeke
-# -*- coding: utf-8 -*-
-#当前可买的可转债
+# 当前可买的可转债
 import json
 import requests
 import prettytable as pt
