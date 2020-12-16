@@ -34,3 +34,8 @@ def index(request):
         'form': form,
     }
     return render(request, 'index.html', context=context)
+
+def ayf(request):
+    return render(request, 'ayf.html')
+
+

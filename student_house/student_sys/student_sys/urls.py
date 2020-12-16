@@ -16,8 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from student.views import index
-
+from student.views import ayf
 urlpatterns = [
+    url(r'^ayf', ayf,name='ayf'),
     url(r'^$', index,name='index'),
     url(r'^admin/', admin.site.urls),
 ]
